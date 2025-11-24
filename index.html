@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bracelet Store</title>
+
+<style>
+
+/* ------------------- GLOBAL ------------------- */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #fafafa;
+}
+
+a{
+  text-decoration: none;
+  color: #111;
+}
+
+.section {
+  padding: 60px 5%;
+}
+
+h2 {
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+/* ------------------- LIMITED EDITION ------------------- */
+.edition-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 25px;
+  justify-content: center;
+}
+
+/* FRAME PORTRAIT - MODIFIED FOR CENTERED PORTRAIT */
+.img-frame {
+  width: 100%;
+  max-width: 240px; /* Limit width to make it portrait */
+  height: 340px; /* potret */
+  overflow: hidden;
+  border-radius: 12px;
+  background: #ddd;
+  margin: 0 auto; /* Center horizontally */
+}
+
+.img-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  object-position: center;
+}
+
+/* To make all product frames portrait-oriented, update the image styles as follows: */
+
+/* For Limited Edition products (already portrait, but unified height) */
+.edition-item img {
+  width: 100%;
+  height: 340px;  /* Portrait height (taller than width) */
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* For Collections products (changed to portrait) */
+.product img {
+  width: 100%;
+  height: 340px;  /* Changed from 240px to 340px for portrait orientation */
+  object-fit: cover;
+  display: block;
+}
+
+
+
+.product-card {
+    width: 320px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+    padding-bottom: 20px;
+    overflow: hidden;
+    margin: 20px auto;
+}
+
+.product-image {
+    width: 100%;
+    height: 380px; /* bikin jadi tegak seperti gambar kedua */
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* auto crop biar mirip gambar 2 */
+}
+
+.product-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 15px;
+}
+
+.product-sub {
+    font-size: 13px;
+    color: #777;
+    margin: 5px 0;
+}
+
+.product-price {
+    font-size: 16px;
+    font-weight: 600;
+    color: #C19700;
+    margin: 10px 0;
+}
+
+.btn-cart {
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-cart:hover {
+    background: #333;
+}
+
+
+/* Responsive adjustments to maintain portrait aspect on smaller screens */
+@media (max-width: 900px) {
+  .edition-item img, .product img {
+    height: 280px;  /* Slightly shorter for tablets */
+  }
+}
+
+@media (max-width: 600px) {
+  .edition-item img, .product img {
+    height: 240px;  /* Even shorter for mobile, but still portrait */
+  }
+}
+
+.info {
+  padding: 18px 10px;
+}
+
+.info h3 {
+  margin-bottom: 6px;
+  font-size: 1.2rem;
+}
+
+.info p {
+  color: #666;
+  font-size: .95rem;
+}
+
+/* Global styles for section and h2 (if not already included) */
+.section {
+  padding: 60px 5%;
+}
+
+h2 {
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+/* ---------- NAV ---------- */
+nav{height:80px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid #eee;position:sticky;top:0;background:#fff;z-index:1000}
+nav .logo{display:flex;align-items:center;gap:12px;font-weight:700;font-size:1.1rem}
+nav ul{display:flex;gap:20px;list-style:none}
+nav ul li a{text-transform:uppercase;font-size:.85rem;letter-spacing:1px;transition:color 0.3s ease}
+nav ul li a:hover{color:#d4af37}
+nav .cart{cursor:pointer;display:flex;align-items:center;gap:8px;transition:transform 0.3s ease}
+nav .cart:hover{transform:scale(1.05)}
+
+/* ---------- HERO BANNER (GAMBAR LANDSCAPE) ---------- */
+.hero-banner {
+    width: 100%;
+    height: 450px;     /* ubah sesuai selera */
+    overflow: hidden;
+    margin-top: 80px;  /* supaya tidak ketutup navbar */
+}
+
+.hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* BIKIN GAMBAR TETAP BAGUS & TIDAK PECAH */
+    display: block;
+}
+
+
+/* ---------- SECTIONS ---------- */
+.section{padding:48px 12px}
+.featured h2,.edition-section h2{text-align:center;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;font-size:1.4rem}
+
+/* ---------- GRID & CARDS ---------- */
+.featured-grid,.edition-grid{max-width:1200px;margin:0 auto;display:grid;gap:20px}
+.featured-grid{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.edition-grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+/* Frame untuk Limited Edition (lebih potret) */
+.edition-item {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.edition-item:hover,
+.product:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0,0,0,.1);
+}
+
+
+/* Gambar Collections tetap seperti semula */
+.product img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  display: block;
+}
+
+.edition-item .price,
+.product .price {
+  color: #d4af37;
+  font-weight: 700;
+  margin: 50px 0;
+  font-size: 1.05rem;
+}
+
+.add-cart,.checkout-btn{display:inline-block;padding:12px 16px;background:#000;color:#fff;border:none;border-radius:8px;text-transform:uppercase;letter-spacing:1px;font-weight:600;font-size:0.9rem;min-width:120px;text-align:center;transition:all 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.add-cart:hover,.checkout-btn:hover{background:#d4af37;color:#000;transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.2)}
+.add-cart:active,.checkout-btn:active{transform:translateY(0);box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+
+/* ---------- CATEGORIES ---------- */
+.categories{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:20px 0}
+.categories button{padding:10px 14px;border:2px solid #000;background:#fff;color:#000;cursor:pointer;text-transform:uppercase;font-size:.85rem;font-weight:600;border-radius:8px;transition:all 0.3s ease;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.categories button:hover{background:#000;color:#fff;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.categories button:active{transform:translateY(0);box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.categories button.active{background:#000;color:#fff}
+
+/* ---------- CART MODAL ---------- */
+.cart-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;align-items:center;justify-content:center;padding:20px}
+.cart-content{background:#fff;padding:18px;border-radius:8px;max-width:820px;width:100%;max-height:90vh;overflow:auto;position:relative}
+.close-cart{position:absolute;right:12px;top:8px;font-size:20px;cursor:pointer;transition:color 0.3s ease}
+.close-cart:hover{color:#d4af37}
+.cart-item{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px dashed #eee}
+.cart-item img{width:70px;height:70px;object-fit:cover;border-radius:6px}
+.qty-controls{display:flex;gap:8px;align-items:center}
+.qty-controls button{padding:8px 12px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:6px;font-weight:600;transition:all 0.2s ease}
+.qty-controls button:hover{background:#f0f0f0}
+.cart-empty{text-align:center;padding:28px;color:#666}
+.checkout-form{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.checkout-form input,.checkout-form textarea{padding:12px;border:1px solid #ddd;border-radius:6px;width:100%;font-size:0.9rem}
+.checkout-form .two{display:flex;gap:8px}
+.checkout-form .two input{flex:1}
+
+/* ---------- CONTACT ---------- */
+.contact-section{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+.contact-info-list{list-style:none;padding-left:0}
+.contact-info{display:flex;gap:10px;align-items:center;padding:8px 0;color:#333}
+.contact-form{display:flex;flex-direction:column;gap:10px}
+.contact-form button{background:#000;color:#fff;padding:12px;border:none;border-radius:8px;font-weight:600;text-transform:uppercase;letter-spacing:1px;transition:all 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.contact-form button:hover{background:#d4af37;color:#000;transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.2)}
+.contact-form button:active{transform:translateY(0);box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+
+/* ---------- FOOTER ---------- */
+footer{background:#111;color:#fff;padding:20px;text-align:center;margin-top:24px;font-size:.9rem}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:900px){
+  .contact-section{grid-template-columns:1fr}
+  .hero h1{font-size:2rem}
+  .edition-item img,.product img{height:200px}
+  .add-cart,.checkout-btn,.contact-form button{padding:14px 18px;font-size:1rem;min-width:140px}
+  .categories button{padding:12px 16px;font-size:0.9rem}
+  .qty-controls button{padding:10px 14px}
+}
+@media (max-width:600px){
+  nav{padding:0 16px}
+  nav ul{gap:12px}
+  nav ul li a{font-size:.8rem}
+  .hero h1{font-size:1.8rem}
+  .add-cart,.checkout-btn,.contact-form button{padding:16px 20px;font-size:1.1rem;min-width:160px}
+  .categories{flex-direction:column;gap:8px}
+  .categories button{width:100%;padding:14px;font-size:1rem}
+}
+    
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="logo">
+      <img src="t.gif" alt="logo" style="width:44px;height:44px;object-fit:cover;border-radius:6px">
+      Twist & Shine
+    </div>
+
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#produk">Collections</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+
+    <div class="cart" aria-label="Open cart" onclick="openCart()">🛒 <span id="cart-count">0</span></div>
+  </nav>
+
+<!-- HERO -->
+<section class="hero" role="banner">
+    <div class="inner">
+        
+
+        <div class="hero-banner">
+            <img src="Navbar Under.png" class="hero-img" alt="Twist and Shine Banner">
+        </div>
+    </div>
+</section>
+
+
+</div>
+
+    </div>
+  </section>
+
+<!-- ================= LIMITED EDITION SECTION ================= -->
+<section class="section featured" aria-labelledby="featured-title">
+  <h2 id="featured-title">LIMITED EDITION</h2>
+
+  <div class="edition-grid">
+    <!-- Item 1 -->
+    <div class="edition-item">
+      <div class="img-frame">
+        <img src="lavender.jpg" alt="Premium">
+      </div>
+      <div class="info">
+        <h3>Premium</h3>
+        <p>Handpicked premium bracelets</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- PRODUCTS -->
+  <section class="section edition-section" id="produk" aria-labelledby="collections-title">
+    <h2 id="collections-title">Collections</h2>
+
+    <div class="categories" role="tablist" aria-label="Product categories">
+      <button onclick="filterProducts('all')">All</button>
+      <button onclick="filterProducts('girls')">Girl's</button>
+      <button onclick="filterProducts('boys')">Boy's</button>
+      <button onclick="filterProducts('couple')">Couple</button>
+    </div>
+
+    <div class="edition-grid" id="product-grid" aria-live="polite">
+      <!-- products rendered by JS (no duplicated static product blocks) -->
+    </div>
+  </section>
+
+  
+
+  <!-- CONTACT -->
+  <section class="section" id="contact" aria-labelledby="contact-title">
+    <h2 id="contact-title" style="text-align:center;margin-bottom:12px">Contact Us</h2>
+    <div class="contact-section">
+      <div>
+        <ul class="contact-info-list">
+          <li class="contact-info"><strong>📍</strong><p>Indonesia, Sumatera Utara, Medan, Jln Bunga Kenanga</p></li>
+          <li class="contact-info"><strong>✉</strong><p>Twist&Shine@gmail.com</p></li>
+          <li class="contact-info"><strong>📞</strong><p>08123456789</p></li>
+          <li class="contact-info"><strong>⏰</strong><p>Senin–Sabtu 09:00–17:00</p></li>
+          <li class="contact-info"><strong>🌐</strong><p>www.TwistAndShine.com</p></li>
+        </ul>
+      </div>
+
+      <form class="contact-form" id="contactForm" onsubmit="handleContactForm(event)">
+        <input type="text" id="contactName" placeholder="Your name" required>
+        <input type="email" id="contactEmail" placeholder="Your email" required>
+        <textarea id="contactMessage" rows="6" placeholder="Your message" required></textarea>
+        <button type="submit">Submit</button>
+        <div id="contactStatus" style="margin-top:8px;color:green;display:none">Thanks — message received (demo).</div>
+      </form>
+    </div>
+  </section>
+
+  <!-- CART MODAL -->
+  <div class="cart-modal" id="cartModal" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+    <div class="cart-content">
+      <span class="close-cart" onclick="closeCart()">✕</span>
+      <h3 id="cart-title">Your Cart</h3>
+      <div id="cartItemsWrap"></div>
+
+      <div id="cartFooter" style="margin-top:12px">
+        <div style="font-weight:700;margin-bottom:6px">Total: <span id="cartTotal">Rp 0</span></div>
+
+        <div class="checkout-form" style="margin-top:6px">
+          <div class="two">
+            <input id="buyerName" placeholder="Your full name" required>
+            <input id="buyerPhone" placeholder="WhatsApp number (08...)" required>
+          </div>
+          <textarea id="buyerAddress" rows="2" placeholder="Address (optional)"></textarea>
+
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+            <button class="checkout-btn" onclick="checkoutWhatsApp()">Checkout via WhatsApp</button>
+            <button style="background:#aaa;color:#fff;padding:10px;border:none;border-radius:6px;cursor:pointer" onclick="clearCart()">Clear Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2025 Twist & Shine — Handcrafted Bracelets. All rights reserved.
+  </footer>
+
+  <script>
+    /*
+      Cart system + WhatsApp checkout
+      - No backend required
+      - Cart saved in localStorage
+      - Edit shopPhone to your store WA number (international, no +). Example: 62812...
+    */
+    const shopPhone = '6281275380001'; // <-- GANTI dengan nomor WA toko (contoh: 62812...)
+    const productData = [
+      { id:'p01', name:'Lilac Dream', price:10000, img:'lilac dream.jpg', category:'girls' },
+      { id:'p02', name:'Crystal Line Bracelet', price:8000, img:'crystal line.jpg', category:'girls' },
+      { id:'p03', name:'Sky Blossom Bracelet', price:10000, img:'sky blossom.jpg', category:'girls' },
+      { id:'p04', name:'Soft Rose Bracelet', price:10000, img:'soft rose.jpg', category:'girls' },
+      { id:'p05', name:'Daisy Glow Bracelet', price:9000, img:'daisy glow.jpg', category:'girls' },
+      { id:'p06', name:'Moonlit Grace Bracelet', price:5000, img:'moonlit.jpg', category:'girls' },
+      { id:'p07', name:'Pastel Shine Bracelet', price:10000, img:'pastel shine.jpg', category:'girls' },
+
+      { id:'p08', name:'Black Valor', price:5000, img:'valor.jpg', category:'boys' },
+      { id:'p09', name:'Black Line', price:10000, img:'line.jpg', category:'boys' },
+
+      { id:'p10', name:'Twin Soul Bracelet', price:5000, img:'twin.jpg', category:'couple' },
+      { id:'p11', name:'Navy Bond Bracelet', price:13000, img:'crosswave.jpg', category:'couple' }
+    ];
+
+    // restore cart or empty
+    let cart = JSON.parse(localStorage.getItem('twist_cart') || '[]');
+
+    function saveCart(){
+      localStorage.setItem('twist_cart', JSON.stringify(cart));
+      renderCartCount();
+    }
+
+    function renderProducts(filter='all'){
+      const grid = document.getElementById('product-grid');
+      grid.innerHTML = '';
+      const items = productData.filter(p => filter==='all' ? true : p.category === filter);
+      items.forEach(p=>{
+        const card = document.createElement('article');
+        card.className = 'edition-item product';
+        card.innerHTML = `
+          <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/600x400?text=${encodeURIComponent(p.name)}'">
+          <div style="padding:12px">
+            <h3>${p.name}</h3>
+            <p style="color:#666;font-size:.95rem;margin-bottom:8px">Handcrafted design</p>
+            <div class="price">Rp ${formatRupiah(p.price)}</div>
+          </div>
+          <div style="padding:0 12px 12px">
+            <button class="add-cart" onclick="addToCart('${p.id}')">Add to Cart</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function filterProducts(cat){ renderProducts(cat); }
+
+    /* ---------- CART ---------- */
+    function addToCart(productId){
+      const prod = productData.find(p=>p.id===productId);
+      if(!prod) return;
+      const idx = cart.findIndex(it=>it.id===productId);
+      if(idx === -1){
+        cart.push({...prod, qty:1});
+      } else {
+        cart[idx].qty += 1;
+      }
+      saveCart();
+      showToast(`${prod.name} added to cart`);
+    }
+
+    function showToast(msg){
+      const t = document.createElement('div');
+      t.textContent = msg;
+      t.style.position = 'fixed';
+      t.style.right = '18px';
+      t.style.bottom = '18px';
+      t.style.background = '#111';
+      t.style.color = '#fff';
+      t.style.padding = '10px 14px';
+      t.style.borderRadius = '8px';
+      t.style.boxShadow = '0 6px 18px rgba(0,0,0,.2)';
+      t.style.zIndex = 9999;
+      document.body.appendChild(t);
+      setTimeout(()=> { t.style.opacity='0'; }, 1600);
+      setTimeout(()=> { t.remove(); }, 2200);
+      renderCartCount();
+    }
+
+    function renderCartCount(){
+      const el = document.getElementById('cart-count');
+      const totalQty = cart.reduce((s,i)=>s+i.qty,0);
+      el.textContent = totalQty;
+    }
+
+    function openCart(){
+      renderCartModal();
+      document.getElementById('cartModal').style.display = 'flex';
+    }
+    function closeCart(){ document.getElementById('cartModal').style.display = 'none'; }
+
+    function renderCartModal(){
+      const wrap = document.getElementById('cartItemsWrap');
+      wrap.innerHTML = '';
+      if(cart.length === 0){
+        wrap.innerHTML = '<div class="cart-empty">Your cart is empty</div>';
+        document.getElementById('cartTotal').textContent = 'Rp 0';
+        return;
+      }
+
+      cart.forEach(item=>{
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <img src="${item.img}" onerror="this.src='https://via.placeholder.com/120?text=${encodeURIComponent(item.name)}'">
+          <div style="flex:1;text-align:left">
+            <div style="font-weight:700">${item.name}</div>
+            <div style="color:#666;font-size:.9rem">Rp ${formatRupiah(item.price)}</div>
+            <div class="qty-controls" style="margin-top:8px">
+              <button onclick="changeQty('${item.id}', -1)">−</button>
+              <div style="min-width:32px;text-align:center">${item.qty}</div>
+              <button onclick="changeQty('${item.id}', 1)">+</button>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-weight:700">Rp ${formatRupiah(item.price * item.qty)}</div>
+            <div style="margin-top:8px"><button style="background:#fff;border:1px solid #ddd;padding:6px;border-radius:6px;cursor:pointer" onclick="removeItem('${item.id}')">Remove</button></div>
+          </div>
+        `;
+        wrap.appendChild(div);
+      });
+
+      document.getElementById('cartTotal').textContent = 'Rp ' + formatRupiah(cart.reduce((s,i)=>s + i.price * i.qty, 0));
+    }
+
+    function changeQty(id, delta){
+      const idx = cart.findIndex(i=>i.id===id);
+      if(idx === -1) return;
+      cart[idx].qty += delta;
+      if(cart[idx].qty <= 0) cart.splice(idx,1);
+      saveCart();
+      renderCartModal();
+    }
+
+    function removeItem(id){
+      cart = cart.filter(i=>i.id !== id);
+      saveCart();
+      renderCartModal();
+    }
+
+    function clearCart(){
+      if(!confirm('Clear cart?')) return;
+      cart = [];
+      saveCart();
+      renderCartModal();
+    }
+
+    /* ---------- CHECKOUT VIA WHATSAPP ---------- */
+    /* ---------- CHECKOUT VIA WHATSAPP ---------- */
+        function checkoutWhatsApp() {
+          if (cart.length === 0) return alert("Keranjang kosong");
+    
+          const buyerName = document.getElementById('buyerName').value.trim();
+          const buyerPhone = document.getElementById('buyerPhone').value.trim();
+          const buyerAddress = document.getElementById('buyerAddress').value.trim();
+    
+          // build plain text message and encode once for the URL
+          let pesanPlain = `NEW ORDER – TWISTSHINE
+    
+    Nama: ${buyerName}
+    WA: ${buyerPhone}${buyerAddress ? `\nAlamat: ${buyerAddress}` : ''}
+    
+    *Daftar Pesanan:*
+    `;
+    
+          cart.forEach(item => {
+            pesanPlain += `${item.name} x${item.qty} = Rp ${item.price * item.qty}\n`;
+          });
+    
+          const total = cart.reduce((t, i) => t + i.price * i.qty, 0);
+          pesanPlain += `\n*Total: Rp ${total}*\n\n_Terima kasih telah berbelanja 🙏_`;
+    
+          const encoded = encodeURIComponent(pesanPlain);
+          const waUrl = "https://wa.me/" + shopPhone + "?text=" + encoded;
+          window.open(waUrl, "_blank");
+        }
+
+    /* ---------- HELPERS ---------- */
+    function formatRupiah(num){
+      return String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    function normalizePhone(input){
+      input = input.replace(/\s|\-|\(|\)/g,'');
+      if(input.startsWith('+')) input = input.slice(1);
+      if(input.startsWith('0')) input = '62' + input.slice(1);
+      return input;
+    }
+
+    /* ---------- CONTACT FORM HANDLER (demo only) ---------- */
+    function handleContactForm(e){
+      e.preventDefault();
+      document.getElementById('contactStatus').style.display = 'block';
+      setTimeout(()=>{ document.getElementById('contactStatus').style.display='none'; }, 3000);
+      e.target.reset();
+    }
+
+    /* ---------- INIT ---------- */
+    function init(){
+      renderProducts('all');
+      renderCartCount();
+      document.addEventListener('keydown', (ev)=>{ if(ev.key === 'Escape') closeCart(); });
+    }
+    init();
+  </script>
+</body>
+</html>
